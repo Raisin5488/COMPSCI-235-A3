@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<main>
+    {% if movies is none %}
+        <p>No matching movie.</p>
+    {% else %}
+        <p>Movies per page: 100</p>
+        {% if current_number == 0 %}
+            <p style="display:inline">Previous page</p>
+            <a href="http://localhost:5000/list/number={{current_number+1}}">Next page</a>
+        {% elif current_number == 9 %}
+            <a href="http://localhost:5000/list/number={{current_number-1}}">Previous page</a>
+            <p style="display:inline">Next page</p>
+        {% else %}
+            <a href="http://localhost:5000/list/number={{current_number-1}}">Previous page</a>
+            <a href="http://localhost:5000/list/number={{current_number+1}}">Next page</a>
+        {% endif %}
+        <p></p>
+        <table>
+            <tr>
+                <th>Movie Title</th>
+                <th>Year</th>
+            </tr>
+            {% for movie in movies %}
+                <tr>
+                    <td><a href="http://localhost:5000/list_one_movie/title={{movie.title}}&year={{movie.year}}">{{ movie.title }}</a></td>
+                    <td>{{ movie.year }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</main>
+
+{% endblock %}

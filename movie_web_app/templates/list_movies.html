@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<main>
+    {% if movies is none %}
+        <p>No matching movie.</p>
+    {% else %}
+    <table>
+        <tr>
+            <th>Movie Title</th>
+            <th>Year</th>
+        </tr>
+        {% for movie in movies %}
+            <tr>
+                <td><a href="http://localhost:5000/list_one_movie/title={{movie.title}}&year={{movie.year}}">{{ movie.title }}</a></td>
+                <td>{{ movie.year }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</main>
+
+{% endblock %}

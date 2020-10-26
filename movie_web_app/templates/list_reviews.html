@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<main>
+    <table class="table">
+        <tr>
+            <th>Movie Title</th>
+            <th>User</th>
+            <th>Review</th>
+            <th>Rating</th>
+            <th>Date</th>
+        </tr>
+        {% for review in reviews %}
+            <tr>
+                <td>{{ review.movie }}</td>
+                <td>{{ review.user }}</td>
+                <td>{{ review.review_text }}</td>
+                <td>{{ review.rating}}</td>
+                <td>{{ review.timestamp}}</td>
+             </tr>
+        {% endfor %}
+    </table>
+</main>
+
+{% endblock %}

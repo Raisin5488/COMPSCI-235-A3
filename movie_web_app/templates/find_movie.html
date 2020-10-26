@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<html>
+	<div>
+		<form method = "POST" action = "{{handler_url}}">
+			{{form.csrf_token}}
+			{% if search_type == 'movie_title' %}
+				<div> {{form.movie_title.label}} {{form.movie_title}}
+					</div>
+			{% elif search_type == 'director_name' %}
+				<div> {{form.director_name.label}} {{form.director_name}}
+					</div>
+			{% elif search_type == 'actor_name' %}
+				<div> {{form.actor_name.label}} {{form.actor_name}}
+					</div>
+			{% elif search_type == 'genre_name' %}
+				<div> {{form.genre_name.label}} {{form.genre_name}}
+					</div>
+			{% elif search_type == 'movie_title_year' %}
+				<div> {{form.movie_title.label}} {{form.movie_title}}
+					</div>
+				<div> {{form.year.label}} {{form.year}}
+					</div>
+			{% elif search_type == 'add_review' %}
+				<div> {{form.movie_title.label}} {{form.movie_title}}
+					</div>
+				<div> {{form.year.label}} {{form.year}}
+					</div>
+				<div> {{form.review_text.label}} {{form.review_text}}
+					</div>
+				<div> {{form.rating.label}} {{form.rating}}
+					</div>
+			{% endif %}
+			{{form.submit}}
+		</form>
+	</div>
+</html>
+{% endblock %}

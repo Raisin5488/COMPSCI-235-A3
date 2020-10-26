@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mycss.css') }}">
+    <meta charset="UTF-8">
+    <title>COMPSCI 235-flix</title>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="http://localhost:5000/">COMPSCI 235-flix</a>
+        <a href="http://localhost:5000/list/number=0">Browse</a>
+        <div class="dropdown">
+            <button class="dropbtn">Search by
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="http://localhost:5000/find_movie_title">Title</a>
+                <a href="http://localhost:5000/find_movie_director">Director</a>
+                <a href="http://localhost:5000/find_movie_actor">Actor</a>
+                <a href="http://localhost:5000/find_movie_genre">Genre</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Reviews
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="http://localhost:5000/list_reviews">Movie Reviews</a>
+                    <a href="http://localhost:5000/add_reviews">Add Review</a>
+                </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Watch List
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="http://localhost:5000/watch_list">Watch List</a>
+                    <a href="http://localhost:5000/add_watch_list">Add movies</a>
+                </div>
+        </div>
+        <div class="topnav-right">
+            <a>User: {{session.username}}</a>
+            <a href="http://localhost:5000/authentication/register">Register</a>
+            <a href="http://localhost:5000/authentication/login">Login</a>
+            <a href="http://localhost:5000/authentication/logout">Logout </a>
+        </div>
+    </div>
+
+    <header>
+        <h1 class="ex1">COMPSCI 235-flix</h1>
+    </header>
+
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

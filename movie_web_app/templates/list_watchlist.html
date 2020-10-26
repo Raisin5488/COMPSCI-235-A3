@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<main>
+    {% if movies is none %}
+        <p>No matching movie.</p>
+    {% else %}
+    <p>Watch time: {{time}}</p>
+    <p></p>
+    <table>
+        <tr>
+            <th>Movie Title</th>
+            <th>Year</th>
+            <th>Remove</th>
+        </tr>
+        {% for movie in movies %}
+            <tr>
+                <td><a href="http://localhost:5000/list_one_movie/title={{movie.title}}&year={{movie.year}}">{{ movie.title }}</a></td>
+                <td>{{ movie.year }}</td>
+                <th><a href="http://localhost:5000/watchlist_remove/title={{movie.title}}&year={{movie.year}}">Watched movie</a></th>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</main>
+
+{% endblock %}
