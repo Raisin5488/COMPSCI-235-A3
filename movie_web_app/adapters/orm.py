@@ -47,7 +47,7 @@ movies = Table(
     Column('title', String(255), nullable=False),
     Column('year', Integer, nullable=False),
     Column('description', String(255), nullable=False),
-    Column('director_id', ForeignKey("directors.id")),
+    Column('director', String(255), nullable=False),
 )
 
 reviews = Table(
@@ -85,7 +85,7 @@ def map_model_to_tables():
         'title': movies.c.title,
         'year': movies.c.year,
         'description': movies.c.description,
-        'director': relationship(Director, backref="movie"),
+        'director': movies.c.director,
     })
     mapper(Review, reviews, properties={
         'movie': relationship(Movie, backref="review"),

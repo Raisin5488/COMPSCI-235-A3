@@ -1,5 +1,6 @@
 import csv
 import os
+import sqlite3
 from abc import ABC
 
 from sqlalchemy import engine
@@ -61,9 +62,9 @@ def populate(engine: Engine, data_path):
     for movie in movie_file_reader.dataset_of_movies:
         insert_movies = """
                 INSERT INTO movies (
-                id, title, year, description)
-                VALUES (?, ?, ?, ?)"""
-        cursor.execute(insert_movies, [temp_id, movie.get_title(), movie.get_year(), movie.description])
+                id, title, year, description, director)
+                VALUES (?, ?, ?, ?, ?)"""
+        cursor.execute(insert_movies, [temp_id, movie.get_title(), movie.get_year(), movie.description, movie.director.get_director()])
         temp_id += 1
     conn.commit()
     conn.close()
@@ -126,14 +127,15 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return all_movies
 
     def get_director_name(self, director_to_find):
-        directors = []
-        try:
-            directors = self._session_cm.session.query(Movie).filter(Movie.director == director_to_find)
-        except NoResultFound:
-            print("No director found in DB.")
-            pass
-        print(directors)
-        return directors
+        connection = sqlite3.connect("movie-web.db")
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM movies WHERE director == '{director_to_find}'")
+        temp = cursor.fetchall()
+        temp = temp[0]
+        movie = Movie(temp[1], temp[2])
+        movie.description = temp[3]
+        movie.director = temp[4]
+        return [movie]
 
     def __iter__(self):
         self._current = 0
@@ -146,4 +148,14 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             self._current += 1
             return self.__dataset_of_movies[self._current - 1]
 
-
+    def get_exact_movie(self, title, year):
+        connection = sqlite3.connect("movie-web.db")
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM movies WHERE title == '{title}' and year == '{year}'")
+        temp = cursor.fetchall()
+        connection.close()
+        temp = temp[0]
+        movie = Movie(temp[1], temp[2])
+        movie.description = temp[3]
+        movie.director = temp[4]
+        return movie
