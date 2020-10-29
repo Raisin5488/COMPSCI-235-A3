@@ -15,4 +15,4 @@ class Config:
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    REPOSITORY = "database" # environ.get('REPOSITORY')
+    REPOSITORY = "database"  # environ.get('REPOSITORY')

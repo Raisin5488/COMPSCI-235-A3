@@ -1,10 +1,6 @@
 class WatchList:
     def __init__(self):
-        self.__movie_list = []
-
-    @property
-    def movie_list(self):
-        return self.__movie_list
+        self.movie_list = []
 
     def add_movie(self, movie):
         if movie not in self.movie_list:

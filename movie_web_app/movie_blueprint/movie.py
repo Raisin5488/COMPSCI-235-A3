@@ -60,15 +60,16 @@ def home():
 
 @movie_blueprint.route('/list/number=<number>')
 def list_movies(number):
-    list = []
+    list = repo.repo_instance.get_movies()
+    return_list = []
     for i in range(0, 100):
         try:
-            list.append(repo.repo_instance.dataset_of_movies[i+100*int(number)])
+            return_list.append(list[i+100*int(number)])
         except IndexError:
             pass
     return render_template(
         'list_browse_movies.html',
-        movies=list,
+        movies=return_list,
         current_number=int(number)
     )
 

@@ -1,26 +1,72 @@
+import csv
 import os
 from abc import ABC
 
+from sqlalchemy import engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 
 from movie_web_app.adapters.movieFileCSVReader import MovieFileCSVReader
 from movie_web_app.adapters.repository import AbstractRepository
+from movie_web_app.domain.director import Director
 from movie_web_app.domain.movie import Movie
 from movie_web_app.domain.user import User
 
 
-def populate(session_factory, data_path, data_filename):
-    filename = os.path.join(data_path, data_filename)
+def movie_record_generator(filename: str):
+    with open(filename, mode='r', encoding='utf-8-sig') as infile:
+        reader = csv.reader(infile)
+
+        # Read first line of the CSV file.
+        headers = next(reader)
+
+        # Read remaining rows from the CSV file.
+        for row in reader:
+
+            movie_data = row
+            movie_key = movie_data[0]
+
+            # Strip any leading/trailing white space from data read.
+            movie_data = [item.strip() for item in movie_data]
+
+            number_of_tags = len(movie_data) - 6
+            movie_tags = movie_data[-number_of_tags:]
+
+            # Add any new tags; associate the current article with tags.
+            for tag in movie_tags:
+                if tag not in tags.keys():
+                    tags[tag] = list()
+                tags[tag].append(movie_key)
+
+            del movie_data[-number_of_tags:]
+
+            yield movie_data
+
+
+def populate(engine: Engine, data_path):
+    filename = "movie_web_app/adapters/Data1000Movies.csv"
     movie_file_reader = MovieFileCSVReader(filename)
-    movie_file_reader.read_csv_file()
-    session = session_factory()
-    # This takes all movies from the csv file (represented as domain model objects) and adds them to the
-    # database. If the uniqueness of directors, actors, genres is correctly handled, and the relationships
-    # are correctly set up in the ORM mapper, then all associations will be dealt with as well!
+    conn = engine.raw_connection()
+    cursor = conn.cursor()
+    temp_id = 1
+    for director in movie_file_reader.dataset_of_directors:
+        insert_directors = """
+                INSERT INTO directors (
+                id, director_full_name)
+                VALUES (?, ?)"""
+        cursor.execute(insert_directors, [temp_id, director.get_director()])
+        temp_id += 1
+    temp_id = 1
     for movie in movie_file_reader.dataset_of_movies:
-        session.add(movie)
-    session.commit()
+        insert_movies = """
+                INSERT INTO movies (
+                id, title, year, description)
+                VALUES (?, ?, ?, ?)"""
+        cursor.execute(insert_movies, [temp_id, movie.get_title(), movie.get_year(), movie.description])
+        temp_id += 1
+    conn.commit()
+    conn.close()
 
 
 class SessionContextManager:
@@ -70,7 +116,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.session.add(user)
             scm.commit()
 
-    def get_articles(self):
+    def get_movies(self):
         all_movies = []
         try:
             all_movies = self._session_cm.session.query(Movie).all()
@@ -78,3 +124,26 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             print("No movies found in DB.")
             pass
         return all_movies
+
+    def get_director_name(self, director_to_find):
+        directors = []
+        try:
+            directors = self._session_cm.session.query(Movie).filter(Movie.director == director_to_find)
+        except NoResultFound:
+            print("No director found in DB.")
+            pass
+        print(directors)
+        return directors
+
+    def __iter__(self):
+        self._current = 0
+        return self
+
+    def __next__(self):
+        if self._current >= len(self.__dataset_of_movies):
+            raise StopIteration
+        else:
+            self._current += 1
+            return self.__dataset_of_movies[self._current - 1]
+
+

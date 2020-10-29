@@ -225,3 +225,6 @@ class MovieFileCSVReader(AbstractRepository):
 
     def add_review(self, movie: str, review_text: str, rating: int, user: str):
         self._reviews.append(Review(movie, review_text, rating, user))
+
+    def get_movies(self):
+        return self.__dataset_of_movies
