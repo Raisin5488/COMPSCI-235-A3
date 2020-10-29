@@ -78,9 +78,53 @@ class MovieFileCSVReader(AbstractRepository):
         self.__total_metascore = 0
         self.__metascore_number_of_movies = 0
         self.read_csv_file()
+        self.read_csv_file_movies()
 
         self._users = []
         self._reviews = []
+
+    def read_csv_file_movies(self):
+        with open(self.__file_name, mode='r', encoding='utf-8-sig') as csvfile:
+            self.__dataset_of_movies = []
+            movie_file_reader = csv.DictReader(csvfile)
+            index = 0
+            for row in movie_file_reader:
+                movie = Movie(row["Title"], int(row["Year"]))
+                movie.description = row["Description"]
+                movie.runtime_minutes = int(row["Runtime (Minutes)"])
+                if row["Rating"] != "N/A":
+                    movie.rating = float(row['Rating'])
+                    self.__total_rating += float(row['Rating'])
+                if row["Votes"] != "N/A":
+                    movie.votes = int(row["Votes"])
+                    self.__total_votes += int(row["Votes"])
+                if row["Revenue (Millions)"] != "N/A":
+                    movie.revenue_millions = float(row["Revenue (Millions)"])
+                    self.__total_revenue_millions += float(row["Revenue (Millions)"])
+                if row["Metascore"] != "N/A":
+                    movie.metascore = int(row["Metascore"])
+                    self.__total_metascore += int(row["Metascore"])
+                for director in self.__dataset_of_directors:
+                    if director.director_full_name == row["Director"]:
+                        movie.director = director
+
+                temp_actor_list = []
+                for actor in row["Actors"].split(","):
+                    temp_actor_list.append(actor.strip())
+
+                temp_genre_list = []
+                for genre in row["Genre"].split(","):
+                    temp_genre_list.append(genre.strip())
+
+                for actor in self.__dataset_of_actors:
+                    if actor.actor_full_name in temp_actor_list:
+                        movie.add_actor(actor)
+
+                for genre in self.__dataset_of_genres:
+                    if genre.genre_name in temp_genre_list:
+                        movie.add_genre(genre)
+                index += 1
+                self.__dataset_of_movies.append(movie)
 
     def read_csv_file(self):
         with open(self.__file_name, mode='r', encoding='utf-8-sig') as csvfile:
@@ -228,3 +272,8 @@ class MovieFileCSVReader(AbstractRepository):
 
     def get_movies(self):
         return self.__dataset_of_movies
+
+
+
+
+

@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Table, MetaData, Column, Integer, String, Date, DateTime,
+    Table, MetaData, Column, Integer, REAL, String, Date, DateTime,
     ForeignKey
 )
 from sqlalchemy.orm import mapper, relationship
@@ -47,8 +47,16 @@ movies = Table(
     Column('title', String(255), nullable=False),
     Column('year', Integer, nullable=False),
     Column('description', String(255), nullable=False),
-    Column('director', String(255), nullable=False),
+    Column('director_id', ForeignKey('directors.id')),
+    Column('runtime_minutes', Integer, nullable=False),
+    Column('rating', Integer, nullable=False),
+    Column('votes', Integer, nullable=False),
+    Column('revenue_millions', REAL, nullable=False),
+    Column('metascore', Integer, nullable=False),
 )
+
+"""Column('actor_id', ForeignKey("actors.id")),
+    Column('genre_id', ForeignKey("genres.id")),"""
 
 reviews = Table(
     'reviews', metadata,
@@ -60,37 +68,73 @@ reviews = Table(
     Column('user_id', ForeignKey("users.id")),
 )
 
-
 watchLists = Table(
-    'watchList', metadata,
+    'watchLists', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', ForeignKey("users.id")),
+)
+
+movies_actors = Table(
+    'movies_actors', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movies_id', ForeignKey("movies.id")),
+    Column('actors_id', ForeignKey("actors.id")),
+)
+
+movies_genres = Table(
+    'movies_genres', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('movies_id', ForeignKey("movies.id")),
+    Column('genres_id', ForeignKey("genres.id")),
+)
+
+watchLists_movies = Table(
+    'watchLists_movies', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('watchLists_id', ForeignKey('watchLists.id')),
+    Column('movies_id', ForeignKey('movies.id'))
 )
 
 
 def map_model_to_tables():
-    mapper(User, users, properties={
-        'username': users.c.username,
-        'password': users.c.password,
-    })
-    mapper(Actor, actors, properties={
-        'actor_full_name': actors.c.actor_full_name,
-    })
-    mapper(Director, directors, properties={
-        'director_full_name': directors.c.director_full_name,
-    })
-    mapper(Genre, genres, properties={
-        'genre_name': genres.c.genre_name,
-    })
-    mapper(Movie, movies, properties={
+    movies_mapper = mapper(Movie, movies, properties={
         'title': movies.c.title,
         'year': movies.c.year,
         'description': movies.c.description,
-        'director': movies.c.director,
+        # 'director_id': relationship(Director),
+        'runtime_minutes': movies.c.runtime_minutes,
+        'rating': movies.c.rating,
+        'votes': movies.c.votes,
+        'revenue_millions': movies.c.revenue_millions,
+        'metascore': movies.c.metascore,
     })
+
+    mapper(User, users, properties={
+        'username': users.c.username,
+        'password': users.c.password,
+        'time_spent_watching_movies_minutes': users.c.time_spent_watching_movies_minutes
+    })
+    mapper(Director, directors, properties={
+        'director_full_name': directors.c.director_full_name,
+        'movies_id': relationship(Movie, backref='director')
+    })
+    mapper(Actor, actors, properties={
+        'actor_full_name': actors.c.actor_full_name,
+        'movies_id': relationship(movies_mapper, secondary=movies_actors, backref='actors')
+    })
+    mapper(Genre, genres, properties={
+        'genre_name': genres.c.genre_name,
+        'movies_id': relationship(movies_mapper, secondary=movies_genres, backref='genres')
+    })
+
     mapper(Review, reviews, properties={
-        'movie': relationship(Movie, backref="review"),
+        # 'movie_id': relationship(Movie),
         'review_text': reviews.c.review_text,
         'rating': reviews.c.rating,
         'timestamp': reviews.c.timestamp,
-        'user': relationship(User, backref="review"),
+        #  'user_id': relationship(User, backref="reviews"),
+    })
+    mapper(WatchList, watchLists, properties={
+        # 'user_id': relationship(User, backref="watchList"),
+        # 'movie_id': relationship(Movie, backref="watchList"),
     })
