@@ -106,7 +106,7 @@ class MovieFileCSVReader(AbstractRepository):
                     self.__total_metascore += int(row["Metascore"])
                 for director in self.__dataset_of_directors:
                     if director.director_full_name == row["Director"]:
-                        movie.director = [director]
+                        movie.director = director
 
                 temp_actor_list = []
                 for actor in row["Actors"].split(","):
@@ -152,7 +152,7 @@ class MovieFileCSVReader(AbstractRepository):
                     movie.metascore = int(row["Metascore"])
                     self.__total_metascore += int(row["Metascore"])
                     self.__metascore_number_of_movies += 1
-                movie.director = [Director(row["Director"])]
+                movie.director = Director(row["Director"])
                 self.__dataset_of_directors.add(Director(row["Director"]))
                 for actor in row["Actors"].split(","):
                     movie.add_actor(Actor(actor.strip()))

@@ -107,7 +107,7 @@ def map_model_to_tables():
         'year': movies.c.year,
         'description': movies.c.description,
         'runtime_minutes': movies.c.runtime_minutes,
-        'director': relationship(Director, secondary=movies_directors, backref='movies'),
+        'director': relationship(Director, back_populates='movies'),
         'actors': relationship(Actor, secondary=movies_actors, backref='movies'),
         'genres': relationship(Genre, secondary=movies_genres, backref='movies'),
         'rating': movies.c.rating,
@@ -123,7 +123,7 @@ def map_model_to_tables():
     # 'watch_list': relationship(WatchList)
     mapper(Director, directors, properties={
         'director_full_name': directors.c.director_full_name,
-        # 'movies': relationship(Movie, backref='director')
+        'movies': relationship(Movie, back_populates='director')
     })
     mapper(Actor, actors, properties={
         'actor_full_name': actors.c.actor_full_name,
