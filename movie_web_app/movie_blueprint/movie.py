@@ -66,11 +66,11 @@ def list_movies(number):
             'home.html',
         )
 
-    list = repo.repo_instance.get_movies()
+    movie_list = repo.repo_instance.get_movies()
     return_list = []
     for i in range(0, 100):
         try:
-            return_list.append(list[i+100*number])
+            return_list.append(movie_list[i+100*number])
         except IndexError:
             pass
     return render_template(

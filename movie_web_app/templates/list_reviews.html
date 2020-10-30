@@ -14,7 +14,7 @@
         {% for review in reviews %}
             <tr>
                 <td>{{ review.movie }}</td>
-                <td>{{ review.user }}</td>
+                <td>{{ review.user.username }}</td>
                 <td>{{ review.review_text }}</td>
                 <td>{{ review.rating}}</td>
                 <td>{{ review.timestamp}}</td>

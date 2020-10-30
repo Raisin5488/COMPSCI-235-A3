@@ -141,7 +141,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return self._session_cm.session.query(Review).all()
 
     def add_review(self, movie: str, review_text: str, rating: int, user: str):
-        user_to_add = self._session_cm.session.query(User).filter_by(username=user)
+        user_to_add = self._session_cm.session.query(User).filter(User.username == user).one()
         review = Review(movie, review_text, rating, user_to_add)
         with self._session_cm as scm:
             scm.session.add(review)

@@ -113,6 +113,7 @@ def map_model_to_tables():
         'username': users.c.username,
         'password': users.c.password,
         'time_spent_watching_movies_minutes': users.c.time_spent_watching_movies_minutes,
+        'reviews': relationship(Review, back_populates="user"),
     })
     # 'watch_list': relationship(WatchList)
     mapper(Director, directors, properties={
@@ -129,11 +130,11 @@ def map_model_to_tables():
     })
 
     mapper(Review, reviews, properties={
-        # 'movie_id': relationship(Movie),
+        # 'movie': relationship(Movie, ),
         'review_text': reviews.c.review_text,
         'rating': reviews.c.rating,
         'timestamp': reviews.c.timestamp,
-        #  'user_id': relationship(User, back_populates="reviews"),
+        'user': relationship(User, back_populates="reviews"),
     })
     mapper(WatchList, watchLists, properties={
         # 'user_id': relationship(User, back_populates="watchList"),
