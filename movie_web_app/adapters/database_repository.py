@@ -16,38 +16,9 @@ from movie_web_app.domain.review import Review
 from movie_web_app.domain.user import User
 
 
-def movie_record_generator(filename: str):
-    with open(filename, mode='r', encoding='utf-8-sig') as infile:
-        reader = csv.reader(infile)
-
-        # Read first line of the CSV file.
-        headers = next(reader)
-
-        # Read remaining rows from the CSV file.
-        for row in reader:
-
-            movie_data = row
-            movie_key = movie_data[0]
-
-            # Strip any leading/trailing white space from data read.
-            movie_data = [item.strip() for item in movie_data]
-
-            number_of_tags = len(movie_data) - 6
-            movie_tags = movie_data[-number_of_tags:]
-
-            # Add any new tags; associate the current article with tags.
-            for tag in movie_tags:
-                if tag not in tags.keys():
-                    tags[tag] = list()
-                tags[tag].append(movie_key)
-
-            del movie_data[-number_of_tags:]
-
-            yield movie_data
-
-
 def populate(session_factory, data_path):
-    filename = "movie_web_app/adapters/Data1000Movies.csv"
+    # filename = "movie_web_app/adapters/Data1000Movies.csv"
+    filename = "movie_web_app/adapters/Data10Movies.csv"
     movie_file_reader = MovieFileCSVReader(filename)
     movie_file_reader.read_csv_file()
 
@@ -109,6 +80,17 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     def reset_session(self):
         self._session_cm.reset_session()
 
+    def __iter__(self):
+        self._current = 0
+        return self
+
+    def __next__(self):
+        if self._current >= len(self.__dataset_of_movies):
+            raise StopIteration
+        else:
+            self._current += 1
+            return self.__dataset_of_movies[self._current - 1]
+
     def add_user(self, user: User):
         with self._session_cm as scm:
             scm.session.add(user)
@@ -124,29 +106,13 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return all_movies
 
     def get_director_name(self, director_to_find):
-        connection = sqlite3.connect("movie-web.db")
-        cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM movies WHERE director == '{director_to_find}'")
-        temp = cursor.fetchall()
-        temp = temp[0]
-        movie = Movie(temp[1], temp[2])
-        movie.description = temp[3]
-        movie.director = temp[4]
-        return [movie]
+        temp = self._session_cm.session.query(Movie).filter(Director.director_full_name == director_to_find)
+        print(temp)
+        return temp
 
-    def __iter__(self):
-        self._current = 0
-        return self
-
-    def __next__(self):
-        if self._current >= len(self.__dataset_of_movies):
-            raise StopIteration
-        else:
-            self._current += 1
-            return self.__dataset_of_movies[self._current - 1]
-
-    def get_exact_movie(self, title, year):
-        temp = self._session_cm.session.query(Movie).filter(Movie.title == title)
+    def get_exact_movie(self, title_to_find, year):
+        temp = self._session_cm.session.query(Movie).filter(Movie.title == title_to_find).first()
+        print(temp)
         return temp
 
     def get_movie_title(self, title):

@@ -17,7 +17,7 @@ class Movie:
         else:
             self.year = year
         self.description = ""
-        self.director = None
+        self.director = []
         self.actors = []
         self.genres = []
         self.runtime_minutes = 0

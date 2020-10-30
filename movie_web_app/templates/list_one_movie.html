@@ -18,7 +18,10 @@
         </tr>
         <tr>
             <td>Director</td>
-            <td>{{ movie.director.director_full_name }}</td>
+            <td>{% for director in movie.director %}
+                    {{director.director_full_name}},
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <td>Actors</td>

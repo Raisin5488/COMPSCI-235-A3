@@ -5,6 +5,7 @@ class Director:
             self.director_full_name = None
         else:
             self.director_full_name = director_full_name.strip()
+        self.movies = []
 
     def get_director(self):
         return self.director_full_name
