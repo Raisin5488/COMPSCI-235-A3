@@ -62,7 +62,7 @@ class MovieFileCSVReader(AbstractRepository):
 
     def __init__(self, file_name: str):
         self.__file_name = file_name
-        self.__dataset_of_movies = []
+        self.dataset_of_movies = []
         self.__dataset_of_actors = set()
         self.__dataset_of_directors = set()
         self.__dataset_of_genres = set()
@@ -85,7 +85,7 @@ class MovieFileCSVReader(AbstractRepository):
 
     def read_csv_file_movies(self):
         with open(self.__file_name, mode='r', encoding='utf-8-sig') as csvfile:
-            self.__dataset_of_movies = []
+            self.dataset_of_movies = []
             movie_file_reader = csv.DictReader(csvfile)
             index = 0
             for row in movie_file_reader:
@@ -94,16 +94,12 @@ class MovieFileCSVReader(AbstractRepository):
                 movie.runtime_minutes = int(row["Runtime (Minutes)"])
                 if row["Rating"] != "N/A":
                     movie.rating = float(row['Rating'])
-                    self.__total_rating += float(row['Rating'])
                 if row["Votes"] != "N/A":
                     movie.votes = int(row["Votes"])
-                    self.__total_votes += int(row["Votes"])
                 if row["Revenue (Millions)"] != "N/A":
                     movie.revenue_millions = float(row["Revenue (Millions)"])
-                    self.__total_revenue_millions += float(row["Revenue (Millions)"])
                 if row["Metascore"] != "N/A":
                     movie.metascore = int(row["Metascore"])
-                    self.__total_metascore += int(row["Metascore"])
                 for director in self.__dataset_of_directors:
                     if director.director_full_name == row["Director"]:
                         movie.director = director
@@ -124,7 +120,7 @@ class MovieFileCSVReader(AbstractRepository):
                     if genre.genre_name in temp_genre_list:
                         movie.add_genre(genre)
                 index += 1
-                self.__dataset_of_movies.append(movie)
+                self.dataset_of_movies.append(movie)
 
     def read_csv_file(self):
         with open(self.__file_name, mode='r', encoding='utf-8-sig') as csvfile:
@@ -161,11 +157,7 @@ class MovieFileCSVReader(AbstractRepository):
                     movie.add_genre(Genre(genre.strip()))
                     self.__dataset_of_genres.add(Genre(genre.strip()))
                 index += 1
-                self.__dataset_of_movies.append(movie)
-
-    @property
-    def dataset_of_movies(self):
-        return self.__dataset_of_movies
+                self.dataset_of_movies.append(movie)
 
     @property
     def dataset_of_directors(self):
@@ -199,20 +191,20 @@ class MovieFileCSVReader(AbstractRepository):
         return self
 
     def __next__(self):
-        if self._current >= len(self.__dataset_of_movies):
+        if self._current >= len(self.dataset_of_movies):
             raise StopIteration
         else:
             self._current += 1
-            return self.__dataset_of_movies[self._current-1]
+            return self.dataset_of_movies[self._current-1]
 
     def get_movie_title(self, movie_title: str):
         return_list = []
         if len(movie_title) <= 5:
-            for movie in self.__dataset_of_movies:
+            for movie in self.dataset_of_movies:
                 if movie_title.lower() in movie.title.lower():
                     return_list.append(movie)
         else:
-            for movie in self.__dataset_of_movies:
+            for movie in self.dataset_of_movies:
                 if fuzzy_search(movie_title, movie.title):
                     return_list.append(movie)
         if not return_list:
@@ -222,7 +214,7 @@ class MovieFileCSVReader(AbstractRepository):
 
     def get_director_name(self, director_to_find: str):
         return_list = []
-        for movie in self.__dataset_of_movies:
+        for movie in self.dataset_of_movies:
             if fuzzy_search(director_to_find, movie.director.director_full_name):
                 return_list.append(movie)
         if not return_list:
@@ -232,7 +224,7 @@ class MovieFileCSVReader(AbstractRepository):
 
     def get_actor_name(self, actor_to_find: str):
         return_list = []
-        for movie in self.__dataset_of_movies:
+        for movie in self.dataset_of_movies:
             for actor in movie.actors:
                 if fuzzy_search(actor_to_find, actor.actor_full_name):
                     return_list.append(movie)
@@ -243,7 +235,7 @@ class MovieFileCSVReader(AbstractRepository):
 
     def get_genre_name(self, genre_to_find: str):
         return_list = []
-        for movie in self.__dataset_of_movies:
+        for movie in self.dataset_of_movies:
             for genre in movie.genres:
                 if fuzzy_search(genre_to_find, genre.genre_name):
                     return_list.append(movie)
@@ -259,7 +251,7 @@ class MovieFileCSVReader(AbstractRepository):
         return next((user for user in self._users if user.username == username), None)
 
     def get_exact_movie(self, title: str, year: int):
-        for movie in self.__dataset_of_movies:
+        for movie in self.dataset_of_movies:
             if movie.title == title and movie.year == year:
                 return movie
         return None
@@ -271,7 +263,7 @@ class MovieFileCSVReader(AbstractRepository):
         self._reviews.append(Review(movie, review_text, rating, user))
 
     def get_movies(self):
-        return self.__dataset_of_movies
+        return self.dataset_of_movies
 
 
 

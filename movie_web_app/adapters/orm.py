@@ -72,12 +72,6 @@ watchLists = Table(
     Column('user_id', ForeignKey("users.id")),
 )
 
-movies_directors = Table(
-    'movies_directors', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('movies_id', ForeignKey("movies.id")),
-    Column('director_id', ForeignKey("directors.id")),
-)
 
 movies_actors = Table(
     'movies_actors', metadata,
