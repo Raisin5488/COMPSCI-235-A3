@@ -3,8 +3,8 @@ from movie_web_app.domain.movie import Movie
 
 
 class Review:
-    def __init__(self, movie: str, review_text: str, rating: int, user: str):
-        if type(movie) is not str:
+    def __init__(self, movie: Movie, review_text: str, rating: int, user: str):
+        if type(movie) is not Movie:
             self.movie = ""
         else:
             self.movie = movie

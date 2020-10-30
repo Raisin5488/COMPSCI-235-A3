@@ -25,6 +25,7 @@ class Movie:
         self.votes = 0
         self.revenue_millions = 0
         self.metascore = 0
+        self.reviews = []
 
     def get_title(self):
         return self.title

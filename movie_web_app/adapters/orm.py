@@ -108,6 +108,7 @@ def map_model_to_tables():
         'votes': movies.c.votes,
         'revenue_millions': movies.c.revenue_millions,
         'metascore': movies.c.metascore,
+        'reviews': relationship(Review, back_populates='movie'),
     })
     mapper(User, users, properties={
         'username': users.c.username,
@@ -130,7 +131,7 @@ def map_model_to_tables():
     })
 
     mapper(Review, reviews, properties={
-        # 'movie': relationship(Movie, ),
+        'movie': relationship(Movie, back_populates="reviews"),
         'review_text': reviews.c.review_text,
         'rating': reviews.c.rating,
         'timestamp': reviews.c.timestamp,

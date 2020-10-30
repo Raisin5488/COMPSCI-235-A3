@@ -212,7 +212,7 @@ def add_reviews():
     if form.validate_on_submit():
         movie = repo.repo_instance.get_exact_movie(form.movie_title.data, form.year.data)
         if movie is not None:
-            repo.repo_instance.add_review(form.movie_title.data, form.review_text.data, form.rating.data, session['username'])
+            repo.repo_instance.add_review(movie, form.review_text.data, form.rating.data, session['username'])
         return render_template(
             'list_reviews.html',
             reviews=repo.repo_instance.get_reviews()

@@ -259,7 +259,7 @@ class MovieFileCSVReader(AbstractRepository):
     def get_reviews(self):
         return self._reviews
 
-    def add_review(self, movie: str, review_text: str, rating: int, username: str):
+    def add_review(self, movie: Movie, review_text: str, rating: int, username: str):
         for i in self._users:
             if i.username == username:
                 self._reviews.append(Review(movie, review_text, rating, i))
