@@ -34,6 +34,7 @@ def populate(session_factory, data_path):
     # database. If the uniqueness of directors, actors, genres is correctly handled, and the relationships
     # are correctly set up in the ORM mapper, then all associations will be dealt with as well!
     for movie in movie_file_reader.dataset_of_movies:
+        print(movie)
         session.add(movie)
     session.commit()
 
@@ -106,7 +107,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return all_movies
 
     def get_director_name(self, director_to_find):
-        temp = self._session_cm.session.query(Movie).filter(Director.director_full_name == director_to_find)
+        temp = self._session_cm.session.query(Movie).filter(Movie.director.director_full_name == director_to_find)
         print(temp)
         return temp
 
