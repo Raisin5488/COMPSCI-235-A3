@@ -7,8 +7,8 @@ from sqlalchemy.orm import clear_mappers, sessionmaker
 from sqlalchemy.pool import NullPool
 
 import movie_web_app.adapters.repository as repo
+from movie_web_app.adapters.memory_repository import MemoryRepository
 from movie_web_app.domain.model import Person
-from movie_web_app.adapters.movieFileCSVReader import MovieFileCSVReader
 from movie_web_app.adapters.orm import metadata, map_model_to_tables
 from movie_web_app.adapters import database_repository
 
@@ -26,7 +26,7 @@ def create_app(test_config=None):
 
     if app.config['REPOSITORY'] == 'memory':
         # Create the MemoryRepository instance for a memory-based repository.
-        repo.repo_instance = MovieFileCSVReader("movie_web_app/adapters/Data1000Movies.csv")
+        repo.repo_instance = MemoryRepository("movie_web_app/adapters/Data1000Movies.csv")
 
     elif app.config['REPOSITORY'] == 'database':
         # Configure database.

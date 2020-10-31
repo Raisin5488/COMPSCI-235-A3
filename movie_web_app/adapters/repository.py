@@ -8,21 +8,7 @@ repo_instance = None
 
 
 class AbstractRepository(abc.ABC):
-
-    @abc.abstractmethod
-    def __iter__(self):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def __next__(self) -> Person:
-        raise NotImplementedError
-
-
-"""
-    @abc.abstractmethod
-    def get_person(self, id: int):
-        raise NotImplementedError
-"""
+    pass
 
 
 class PeopleRepository(AbstractRepository):

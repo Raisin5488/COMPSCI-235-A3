@@ -108,30 +108,30 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return all_movies
 
     def get_director_name(self, director_to_find):
-        temp = self._session_cm.session.query(Movie).join(Director).filter(Director.director_full_name == director_to_find)
+        temp = self._session_cm.session.query(Movie).join(Director).filter(Director.director_full_name.like(director_to_find))
         return temp
 
     def get_exact_movie(self, title_to_find, year):
-        temp = self._session_cm.session.query(Movie).filter(Movie.title == title_to_find).first()
+        temp = self._session_cm.session.query(Movie).filter(Movie.title.like(title_to_find)).first()
         print(temp)
         return temp
 
     def get_movie_title(self, title):
-        temp = self._session_cm.session.query(Movie).filter(Movie.title == title)
+        temp = self._session_cm.session.query(Movie).filter(Movie.title.like(title))
         return temp
 
     def get_actor_name(self, actor):
-        temp = self._session_cm.session.query(Movie).join(movies_actors).join(Actor).filter(Actor.actor_full_name == actor)
+        temp = self._session_cm.session.query(Movie).join(movies_actors).join(Actor).filter(Actor.actor_full_name.like(actor))
         return temp
 
     def get_genre_name(self, genre):
-        temp = self._session_cm.session.query(Movie).join(movies_genres).join(Genre).filter(Genre.genre_name == genre)
+        temp = self._session_cm.session.query(Movie).join(movies_genres).join(Genre).filter(Genre.genre_name.like(genre))
         return temp
 
     def get_user(self, username) -> User:
         user = None
         try:
-            user = self._session_cm.session.query(User).filter_by(username=username).one()
+            user = self._session_cm.session.query(User).filter(User.username.like(username)).one()
         except NoResultFound:
             # Ignore any exception and return None.
             pass
@@ -141,7 +141,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         return self._session_cm.session.query(Review).all()
 
     def add_review(self, movie: Movie, review_text: str, rating: int, user: str):
-        user_to_add = self._session_cm.session.query(User).filter(User.username == user).one()
+        user_to_add = self._session_cm.session.query(User).filter(User.username.like(user)).one()
         review = Review(movie, review_text, rating, user_to_add)
         with self._session_cm as scm:
             scm.session.add(review)

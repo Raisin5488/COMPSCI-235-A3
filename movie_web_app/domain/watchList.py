@@ -1,6 +1,7 @@
 class WatchList:
     def __init__(self):
         self.movie_list = []
+        self.user = []
 
     def add_movie(self, movie):
         if movie not in self.movie_list:
