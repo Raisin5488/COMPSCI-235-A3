@@ -7,7 +7,7 @@ def test_database_populate_inspect_table_names(database_engine):
 
     # Get table information
     inspector = inspect(database_engine)
-    assert inspector.get_table_names() == ['article_tags', 'articles', 'comments', 'tags', 'users']
+    assert inspector.get_table_names() == ['actors', 'directors', 'genres', 'movies', 'movies_actors', 'movies_genres', 'reviews', 'users', 'watchLists', 'watchLists_movies']
 
 
 def test_database_populate_select_all_tags(database_engine):
@@ -32,7 +32,7 @@ def test_database_populate_select_all_users(database_engine):
 
     # Get table information
     inspector = inspect(database_engine)
-    name_of_users_table = inspector.get_table_names()[4]
+    name_of_users_table = inspector.get_table_names()[7]
 
     with database_engine.connect() as connection:
         # query for records in table users

@@ -62,6 +62,7 @@ class MemoryRepository(AbstractRepository):
 
     def __init__(self, file_name: str):
         movie_reader = MovieFileCSVReader(file_name)
+        movie_reader.read_csv_file()
         self.__file_name = file_name
         self.dataset_of_movies = movie_reader.dataset_of_movies
         self.__dataset_of_actors = movie_reader.dataset_of_actors

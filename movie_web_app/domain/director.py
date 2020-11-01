@@ -13,10 +13,10 @@ class Director:
     def __repr__(self):
         return f"<Director {self.get_director()}>"
 
-    """def __eq__(self, other):
+    def __eq__(self, other):
         if self.director_full_name == other.director_full_name:
             return True
-        return False"""
+        return False
 
     def __lt__(self, other):
         return self.director_full_name < other.director_full_name

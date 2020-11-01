@@ -50,7 +50,7 @@ def create_app(test_config=None):
             # Generate mappings that map domain model classes to the database tables.
             map_model_to_tables()
 
-            database_repository.populate(database_engine, data_path)
+            database_repository.populate(database_engine, data_path, "movie_web_app/adapters/Data1000Movies.csv")
 
         else:
             # Solely generate mappings that map domain model classes to the database tables.

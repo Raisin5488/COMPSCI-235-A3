@@ -24,8 +24,6 @@ class MovieFileCSVReader:
         self.__revenue_millions_number_of_movies = 0
         self.__total_metascore = 0
         self.__metascore_number_of_movies = 0
-        self.read_csv_file()
-        self.read_csv_file_movies()
 
     def read_csv_file_movies(self):
         with open(self.__file_name, mode='r', encoding='utf-8-sig') as csvfile:

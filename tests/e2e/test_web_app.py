@@ -41,7 +41,7 @@ def test_login(client, auth):
 
     # Check that a successful login generates a redirect to the homepage.
     response = auth.login()
-    assert response.headers['Location'] == 'http://localhost/'
+    assert response.headers['Location'] == 'http://localhost:5000/'
 
     # Check that a session has been created for the logged-in user.
     with client:

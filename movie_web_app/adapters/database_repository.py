@@ -19,11 +19,10 @@ from movie_web_app.domain.review import Review
 from movie_web_app.domain.user import User
 
 
-def populate(session_factory, data_path):
-    # filename = "movie_web_app/adapters/Data1000Movies.csv"
-    filename = "movie_web_app/adapters/Data10Movies.csv"
+def populate(session_factory, data_path, filename):
     movie_file_reader = MovieFileCSVReader(filename)
-
+    movie_file_reader.read_csv_file()
+    movie_file_reader.read_csv_file_movies()
     # create a configured "Session" class
     Session = sessionmaker(bind=session_factory)
 
